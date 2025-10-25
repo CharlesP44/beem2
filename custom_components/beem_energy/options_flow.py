@@ -3,7 +3,6 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant import config_entries
-from .const import DOMAIN
 
 CONF_ENABLE_LIVE_MQTT = "enable_live_mqtt"
 CONF_BRAIN_SERIAL = "brain_serial"

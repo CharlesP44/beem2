@@ -1,5 +1,4 @@
-from unittest.mock import patch, AsyncMock
-import pytest
+from unittest.mock import patch
 
 from homeassistant.core import HomeAssistant
 from homeassistant.const import ConfigEntryState
