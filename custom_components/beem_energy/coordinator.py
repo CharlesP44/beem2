@@ -13,7 +13,13 @@ from .const import DOMAIN, BASE_URL
 from .exceptions import BeemAuthError, BeemConnectionError
 from .utils.merge import merge_live_into_battery
 from datetime import datetime, timezone
-from .beem_api import get_devices, get_tokens, get_battery_live_data, get_box_summary, get_battery_control_parameters
+from .beem_api import (
+    get_devices,
+    get_tokens,
+    get_battery_live_data,
+    get_box_summary,
+    get_battery_control_parameters,
+)
 
 
 _LOGGER = logging.getLogger(__name__)
