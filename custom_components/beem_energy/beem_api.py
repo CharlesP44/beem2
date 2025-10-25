@@ -63,9 +63,10 @@ async def _notify_rate_limit(hass, title: str, message: str) -> None:
             {"title": title, "message": message},
             blocking=True,
         )
-    except Exception:
-        pass
-
+    except Exception as e:
+        _LOGGER.warning(
+            "Impossible de créer la notification persistante '%s'. Erreur: %s", title, e
+        )
 
 async def try_login(email: str, password: str) -> dict:
     """Test de login simple (non utilisé par l’intégration en routine)."""
