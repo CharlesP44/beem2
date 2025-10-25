@@ -1,0 +1,47 @@
+# .github/workflows/auto-fix.yml
+
+name: "Auto-fix Code Quality"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  ruff-fix-and-format:
+    name: "Run Ruff Fix & Format"
+    runs-on: ubuntu-latest
+
+    # Indispensable pour permettre au workflow de pousser du code
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout the repository"
+        uses: "actions/checkout@v4"
+
+      - name: "Set up Python"
+        uses: "actions/setup-python@v5"
+        with:
+          python-version: "3.11" # ou la version que vous préférez
+
+      - name: "Install Ruff"
+        run: pip install ruff
+
+      - name: "Fix linting errors"
+        # L'option --exit-zero est cruciale.
+        # Elle empêche le workflow de s'arrêter s'il y a des erreurs non-réparables.
+        run: ruff check . --fix --exit-zero
+
+      - name: "Format code"
+        run: ruff format .
+
+      - name: "Commit changes"
+        # Cette action va détecter les changements et créer un commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto-fix and format code with ruff"
+          commit_user_name: "GitHub Action"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Action <actions@github.com>"
