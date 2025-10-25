@@ -12,6 +12,11 @@ jobs:
   ruff-format:
     name: "Run Ruff Auto-formatter"
     runs-on: ubuntu-latest
+
+    # AJOUTEZ CETTE SECTION POUR DONNER LES PERMISSIONS D'ÉCRITURE
+    permissions:
+      contents: write
+
     steps:
       # Étape 1 : Récupérer le code du dépôt
       - name: Checkout code
@@ -27,11 +32,11 @@ jobs:
       - name: Install Ruff
         run: pip install ruff
 
-      # Étape 4 : Exécuter le formatage. Cette commande MODIFIE les fichiers si nécessaire.
+      # Étape 4 : Exécuter le formatage
       - name: "Format code with Ruff"
         run: ruff format .
 
-      # Étape 5 : Créer un commit avec les modifications de formatage s'il y en a
+      # Étape 5 : Créer un commit avec les modifications
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
