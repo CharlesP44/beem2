@@ -1,47 +1,77 @@
-# .github/workflows/auto-fix.yml
-
-name: "Auto-fix Code Quality"
+name: "🧹 Auto Fix & Format (Ruff)"
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths-ignore:
+      - ".github/workflows/auto-fix.yml"
+      - ".github/workflows/lint.yml"
+      - "**/*.md"
+      - "**/*.txt"
 
 jobs:
   ruff-fix-and-format:
     name: "Run Ruff Fix & Format"
     runs-on: ubuntu-latest
 
-    # Indispensable pour permettre au workflow de pousser du code
     permissions:
       contents: write
+      pull-requests: write
+
+    if: github.actor != 'github-actions[bot]'
 
     steps:
-      - name: "Checkout the repository"
-        uses: "actions/checkout@v4"
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: "Set up Python"
-        uses: "actions/setup-python@v5"
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11" # ou la version que vous préférez
+          python-version: "3.11"
 
       - name: "Install Ruff"
         run: pip install ruff
 
-      - name: "Fix linting errors"
-        # L'option --exit-zero est cruciale.
-        # Elle empêche le workflow de s'arrêter s'il y a des erreurs non-réparables.
-        run: ruff check . --fix --exit-zero
+      - name: "Run Ruff lint & auto-fix"
+        run: ruff check src/ tests/ --fix --exit-zero
 
       - name: "Format code"
-        run: ruff format .
+        run: ruff format src/ tests/
 
-      - name: "Commit changes"
-        # Cette action va détecter les changements et créer un commit
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: "Show diff summary"
+        run: git diff --stat || echo "No changes detected."
+
+      - name: "Check if changes exist"
+        id: changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: "Create auto-fix branch and commit"
+        if: steps.changes.outputs.changes == 'true'
+        run: |
+          BRANCH_NAME="auto-fix/ruff-$(date +'%Y%m%d-%H%M%S')"
+          git checkout -b $BRANCH_NAME
+          git add .
+          git commit -m "style: auto-fix and format code with Ruff"
+          git push origin $BRANCH_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Create pull request"
+        if: steps.changes.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "style: auto-fix and format code with ruff"
-          commit_user_name: "GitHub Action"
-          commit_user_email: "actions@github.com"
-          commit_author: "GitHub Action <actions@github.com>"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "style: auto-fix and format code with Ruff"
+          body: |
+            🤖 Ce PR a été généré automatiquement par le workflow **Auto Fix & Format (Ruff)**.
+
+            Il applique les corrections et la mise en forme de code selon les règles définies par Ruff.
+          base: main
+          commit-message: "style: auto-fix and format code with Ruff"
