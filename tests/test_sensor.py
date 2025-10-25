@@ -1,6 +1,7 @@
 from homeassistant.core import HomeAssistant
 from homeassistant.const import PERCENTAGE, UnitOfPower
 
+
 async def test_battery_sensors_state(hass: HomeAssistant, setup_integration):
     """Test l'état initial des capteurs de la batterie."""
     # Test un capteur principal

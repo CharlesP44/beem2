@@ -6,6 +6,7 @@ from homeassistant.const import ConfigEntryState
 
 from custom_components.beem_energy.exceptions import BeemConnectionError
 
+
 async def test_setup_and_unload_entry(hass: HomeAssistant, setup_integration):
     """Test le chargement et le déchargement de l'intégration."""
     entry = setup_integration
@@ -14,6 +15,7 @@ async def test_setup_and_unload_entry(hass: HomeAssistant, setup_integration):
     assert await hass.config_entries.async_unload(entry.entry_id)
     await hass.async_block_till_done()
     assert entry.state is ConfigEntryState.NOT_LOADED
+
 
 async def test_setup_fails_on_connection_error(hass: HomeAssistant, mock_config_entry):
     """Test que le setup passe en mode 'retry' si l'API est injoignable."""

@@ -8,13 +8,16 @@ from homeassistant.data_entry_flow import FlowResultType
 from custom_components.beem_energy.const import DOMAIN
 from custom_components.beem_energy.exceptions import BeemAuthError, BeemConnectionError
 
+
 async def test_config_flow_success(hass: HomeAssistant):
     """Test un flow de configuration réussi."""
     with patch(
         "custom_components.beem_energy.config_flow.try_login",
         return_value={"access_token": "fake_token", "user_id": "123"},
     ):
-        result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": SOURCE_USER}
+        )
         assert result["type"] == FlowResultType.FORM
         assert result["step_id"] == "user"
 
@@ -27,6 +30,7 @@ async def test_config_flow_success(hass: HomeAssistant):
         assert result2["title"] == "Beem Energy (test@beem.fr)"
         assert result2["data"] == {"email": "test@beem.fr", "password": "ok"}
 
+
 @pytest.mark.parametrize(
     ("side_effect", "error_base"),
     [
@@ -37,8 +41,12 @@ async def test_config_flow_success(hass: HomeAssistant):
 )
 async def test_config_flow_failures(hass: HomeAssistant, side_effect, error_base):
     """Test les différents cas d'échec du flow de configuration."""
-    with patch("custom_components.beem_energy.config_flow.try_login", side_effect=side_effect):
-        result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
+    with patch(
+        "custom_components.beem_energy.config_flow.try_login", side_effect=side_effect
+    ):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": SOURCE_USER}
+        )
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"], user_input={"email": "fail@beem.fr", "password": "bad"}
         )
