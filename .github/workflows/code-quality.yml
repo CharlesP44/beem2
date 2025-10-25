@@ -1,0 +1,34 @@
+# .github/workflows/code-quality.yml
+
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  ruff-checks:
+    name: "Run Ruff Linter and Formatter"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      # Étape 1 : Vérifier le formatage
+      # L'option --check ne modifie pas les fichiers, mais sort avec un code d'erreur s'ils ne sont pas formatés.
+      - name: "Check formatting with Ruff"
+        run: ruff format . --check
+
+      # Étape 2 : Linter le code (cette étape ne s'exécute que si la précédente a réussi)
+      - name: "Lint with Ruff"
+        run: ruff check . --output-format=github
