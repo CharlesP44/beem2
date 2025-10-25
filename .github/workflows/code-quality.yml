@@ -1,6 +1,6 @@
 # .github/workflows/code-quality.yml
 
-name: Code Quality Checks
+name: Auto-format Code
 
 on:
   push:
@@ -9,26 +9,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  ruff-checks:
-    name: "Run Ruff Linter and Formatter"
+  ruff-format:
+    name: "Run Ruff Auto-formatter"
     runs-on: ubuntu-latest
     steps:
+      # Étape 1 : Récupérer le code du dépôt
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Étape 2 : Mettre en place Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      # Étape 3 : Installer Ruff
       - name: Install Ruff
         run: pip install ruff
 
-      # Étape 1 : Vérifier le formatage
-      # L'option --check ne modifie pas les fichiers, mais sort avec un code d'erreur s'ils ne sont pas formatés.
-      - name: "Check formatting with Ruff"
-        run: ruff format . --check
+      # Étape 4 : Exécuter le formatage. Cette commande MODIFIE les fichiers si nécessaire.
+      - name: "Format code with Ruff"
+        run: ruff format .
 
-      # Étape 2 : Linter le code (cette étape ne s'exécute que si la précédente a réussi)
-      - name: "Lint with Ruff"
-        run: ruff check . --output-format=github
+      # Étape 5 : Créer un commit avec les modifications de formatage s'il y en a
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto-format code with ruff"
+          commit_user_name: "GitHub Action"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Action <actions@github.com>"
