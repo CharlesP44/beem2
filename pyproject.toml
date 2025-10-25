@@ -1,15 +1,6 @@
+# Configuration principale pour Ruff
 [tool.ruff]
-# Vise la compatibilité avec Python 3.9+
 target-version = "py39"
-
-# Règles de linting à appliquer. 'E' et 'F' sont les règles de base.
-select = ["E", "F", "W", "I"]
-
-# Ignore certaines règles si nécessaire (E501 = ligne trop longue)
-ignore = ["E501"]
-
-# Exclut les dossiers qui ne doivent pas être analysés.
-# C'est ici que se trouvait l'erreur.
 exclude = [
     ".git",
     ".github",
@@ -17,6 +8,11 @@ exclude = [
     "__pycache__",
 ]
 
+# Section spécifique pour les règles du Linter
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+# Section spécifique pour les règles du Formateur
 [tool.ruff.format]
-# Options de formatage (optionnel)
 quote-style = "double"
