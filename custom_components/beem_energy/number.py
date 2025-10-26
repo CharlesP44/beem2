@@ -69,7 +69,7 @@ class BaseBeemAdvancedNumber(CoordinatorEntity[BeemCoordinator], NumberEntity):
             await self.coordinator.async_request_refresh()
         except Exception as e:
             _LOGGER.error(
-                "Erreur lors de la mise à jour du paramètre %s: %s", self._api_key, e
+                "Erreur lors de la mise à jour du paramètre Beem Energy : %s", e
             )
 
 
