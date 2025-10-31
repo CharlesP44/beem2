@@ -21,9 +21,11 @@ CONFIG_SCHEMA = cv.empty_config_schema("beem_energy")
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Initialisation globale, vide ici."""
     return True
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Initialisation d'une entrée de configuration."""
@@ -66,6 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady("Erreur d'authentification (temporaire ?).")
 
     try:
+
         def make_ssl_context():
             ctx = ssl.create_default_context()
             ctx.check_hostname = True
@@ -127,7 +130,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     _LOGGER.info("[INIT] Setup_entry terminé pour %s.", entry.entry_id)
     return True
-
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
